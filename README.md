@@ -524,3 +524,81 @@ const b: IPlus<string> = connect;
 ```
 
 > 泛型, 重点突出一个灵活
+
+---
+
+## 类型别名 type aliases
+
+- 就是给类型:
+  - 起一个别名:
+
+```ts
+// type aliases
+type PlusType = (x: number, y: number) => number;
+
+function sum(x: number, y: number): number {
+  return x + y;
+}
+
+const sum2: PlusType = sum;
+```
+
+### 联合类型下 '类型别名' 的常用场景
+
+```ts
+// 联合类型下 '类型别名' 的常用场景
+type NameResolver = () => string;
+type NameOrResolver = string | NameResolver;
+
+function getName(n: NameOrResolver): string {
+  if (typeof n === "string") {
+    return n;
+  } else {
+    return n();
+  }
+}
+```
+
+## 类型断言 type assertion
+
+- `as`
+- 告诉编辑器, 我们比你更懂需要什么类型;(也就是强制制定)
+
+```ts
+// 类型断言
+function getLength(input: string | number): number {
+  const str = input as String;
+  if (str.length) {
+    return str.length;
+  } else {
+    const number = input as Number;
+    return number.toString().length;
+  }
+}
+```
+
+> 这样, 就不会只能用联合类型下的共有方法了;
+
+- 还有更简单的实现方法:
+
+```ts
+function getLength(input: string | number): number {
+  if ((<string>input).length) {
+    return (<string>input).length;
+  } else {
+    return input.toString().length;
+  }
+}
+```
+
+> 类型断言不是类型转换, 不能断言成不存在的、未定义的 '类型';
+
+## 使用第三方库时的 ts 定义
+
+- 以 JQ 为例:
+
+```ts
+declare var jQuery: (selector: string) => any;
+```
+
+- 这样，就能正常使用 jQuery 前缀了;(也就是$符号)
